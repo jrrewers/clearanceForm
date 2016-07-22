@@ -1,7 +1,7 @@
 'use strict';
 
 let util = require('../util');
-let clearance_unit = require('../../model/Clearance_unit').clearance_unit_model;
+let clearance_unit = require('.././Clearance_unit').clearance_unit_model;
 
 describe('Clearance Unit Model', function () {
     it('should add new Clearance Unit', function *() {

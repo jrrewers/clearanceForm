@@ -1,7 +1,7 @@
 'use strict';
 
 let util = require('../util');
-let verification_unit = require('../../model/Verfication_unit').verification_unit_model;
+let verification_unit = require('.././Verfication_unit').verification_unit_model;
 
 describe('Verification Unit Model', function () {
     it('should add new Verficiation Unit', function *() {

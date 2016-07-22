@@ -1,50 +1,85 @@
 'use strict';
-let co = require('co');
-let coMocha = require('co-mocha');
-let chai = require('chai');
-let chaiAsPromised = require("chai-as-promised");
-let sinon = require('sinon');
-let expect = chai.expect;
-chai.use(chaiAsPromised);
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+const babelRegister = require('babel-register');
+const babelPolyfill = require('babel-polyfill');
+const chai = require('chai');
+const sinon = require('sinon');
 chai.should();
-let bcrypt = require('bcryptjs');
-let mongoose = require('mongoose');
-let MongoDB = mongoose.connect('mongodb://localhost:27017/clearanceForm-test').connection;
+const request = require('supertest');
+const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+let passport = require('passport');
+const localStrategy = require('passport-local');
+const request = require('superagent');
+
 
 describe('test', function () {
+
     beforeEach(function (done) {
-        function clearDB() {
-            done();
-        }
-
         if (mongoose.connection.readyState === 0) {
-            let MongoDB = mongoose.connect('mongodb://localhost:27017/clearanceForm-test')
-            MongoDB.on('error', function(err) { console.log(err.message); });
-            MongoDB.once('open', function() {
+            mongoose.connect('mongodb://localhost:27017/clearanceForm-test', function () {
                 console.log("mongodb test connection open");
-                return clearDB()
+                done();
             });
-        } else {
-            return clearDB();
         }
     });
-    afterEach(function (done) {
-        mongoose.disconnect();
-        return done();
+
+    afterEach(function () {
+        console.log("test finished");
     });
 
-    it('should create a document', function *() {
+    it('logs in', async function () {
+        passport.use(new localStrategy(
+            async function (username, password, done) {
+                try {
+                    console.log('entered');
+                    let foundIn_test_model = await test_model.findOne({username: username});
+                    if (!!foundIn_test_model && (bcrypt.compareSync(password, foundIn_test_model.password))) {
+                        return done(null, foundIn_test_model)
+                    }
+                    let foundIn_test_model2 = await test_model2.findOne({username: username});
+                    if (!!foundIn_test_model2 && (bcrypt.compareSync(password, foundIn_test_model2.password))) {
+                        return done(null, foundIn_test_model2)
+                    }
+                    return done(null, false)
+                } catch (error) {
+                    return done(error);
+                }
+            }
+        ));
+
         let Schema = mongoose.Schema;
         let test_schema = new Schema({
-            first: String,
-            second: String
+            username: String,
+            password: String,
+            group: {type: String, enum: ['clearance_unit_managers', 'clearance_unit_admins']}
         });
         let test_model = mongoose.model('test', test_schema);
 
-        let sth = new test_model({first: '111', second: '222'});
-        let savedUser = yield sth.save();
-        let foundUser = yield test_model.findById(savedUser._id);
-        savedUser._id.toString().should.equal(foundUser._id.toString());
+        let test_schema2 = new Schema({
+            username: String,
+            password: String,
+            group: {type: String, enum: ['clearance_unit_managers', 'clearance_unit_admins']}
+        });
+        let test_model2 = mongoose.model('test2', test_schema2);
+
+        const unhashedPassword = Math.random().toString(36);
+        const passed = {
+            username: Math.random().toString(36),
+            password: bcrypt.hashSync(unhashedPassword),
+            group: 'clearance_unit_managers'
+        };
+
+        let saved = await new test_model(passed).save();
+
+        let user = request.agent();
+        
+
 
     });
+
 });

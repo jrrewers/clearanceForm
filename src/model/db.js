@@ -1,4 +1,5 @@
 'use strict';
+/*
 let mongoose = require('mongoose');
 let db = {
     development: 'mongodb://localhost:27017/clearanceForm',
@@ -9,4 +10,4 @@ let MongoDB = mongoose.connect('mongodb://localhost:27017/clearanceForm').connec
 MongoDB.on('error', function(err) { console.log(err.message); });
 MongoDB.once('open', function() {
     console.log("mongodb connection open");
-});
+});*/

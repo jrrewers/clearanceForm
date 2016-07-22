@@ -9,7 +9,10 @@ chai.use(chaiAsPromised);
 chai.should();
 let bcrypt = require('bcryptjs');
 let mongoose = require('mongoose');
+let passport = require('passport');
 let MongoDB = mongoose.connect('mongodb://localhost:27017/clearanceForm-test').connection;
+let request = require('request');
+let http = require('http');
 
 beforeEach(function (done) {
     function clearDB() {

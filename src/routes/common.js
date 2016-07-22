@@ -1,4 +1,6 @@
 'use strict';
+const babelPolyfill = require('babel-polyfill');
+const mongoose = require('mongoose');
 
 let express = require('express');
 let app = express();
@@ -27,3 +29,21 @@ app.use(passport.session());
 app.use(require('connect-flash')());
 
 let server = app.listen(3000);
+
+app.post('/login', function (req, res) {
+    console.log(1);
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {res.send(err)}
+        if (user) {res.send(user)}
+    })
+});
+
+/*
+modules.exports.commonRoutes = {
+    login: app.post('/login', function (req, res) {
+        passport.authenticate('local', function (err, user, info) {
+            if (err) {res.send(err)}
+            if (user) {res.send(user)}
+        })
+    })
+};*/
