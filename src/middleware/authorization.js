@@ -1,29 +1,10 @@
 'use strict';
 const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-//const mongoose = require('mongoose');
-/*let test_model = mongoose.model('test');
-let test_model2 = mongoose.model('test2');
-let mock_models = require('../model/Mock_Models');*/
 
-const mongoose = require('mongoose');
-let Schema = mongoose.Schema;
-let test_schema = new Schema({
-    username: String,
-    password: String,
-    group: {type: String, enum: ['clearance_unit_managers', 'clearance_unit_admins']}
-});
-let test_model = mongoose.model('test', test_schema);
-
-let test_schema2 = new Schema({
-    username: String,
-    password: String,
-    group: {type: String, enum: ['clearance_unit_managers', 'clearance_unit_admins']}
-});
-let test_model2 = mongoose.model('test2', test_schema2);
-
-
-module.exports = function (app, passport) {
+module.exports = function (app, passport, mongoose) {
+    let test_model = mongoose.model('test');
+    let test_model2 = mongoose.model('test2');
     passport.use('local', new localStrategy(
         async function (username, password, done) {
             try {
