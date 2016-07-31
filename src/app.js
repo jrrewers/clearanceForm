@@ -6,9 +6,9 @@ let express = require('express');
 let app = express();
 
 let db = require('./model/db');
+/*require('./model/Mock_Models');*/
 
 let passport = require('passport');
-const localStrategy = require('passport-local').Strategy;
 let morgan = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser   = require('body-parser');
@@ -34,7 +34,7 @@ app.use(require('connect-flash')());
 const request = require('superagent');
 const user1 = request.agent();
 
-passport.use('local', new localStrategy(
+/*passport.use('local', new localStrategy(
     async function (username, password, done) {
         try {
             console.log('entered');
@@ -61,12 +61,15 @@ passport.deserializeUser(function(id, done) {
     test_model.findById(id, function(err, user) {
         done(err, user);
     });
-});
+});*/
+
+require('./middleware/authorization')(app, passport);
+require('./routes/common')(app, passport);
 
 
 let server = app.listen(3000);
 
-let Schema = mongoose.Schema;
+/*let Schema = mongoose.Schema;
 let test_schema = new Schema({
     username: String,
     password: String,
@@ -79,7 +82,7 @@ let test_schema2 = new Schema({
     password: String,
     group: {type: String, enum: ['clearance_unit_managers', 'clearance_unit_admins']}
 });
-let test_model2 = mongoose.model('test2', test_schema2);
+let test_model2 = mongoose.model('test2', test_schema2);*/
 
 const unhashedPassword = 'haslo';
 const passed = {
@@ -105,18 +108,8 @@ if (mongoose.connection.readyState === 0) {
 
 user1
     .post('http://127.0.0.1:3000/login')
-    .send({username: '123456', password: 'hasloa'})
+    .send({username: '123456', password: 'haslo'})
     .end(function (err, res) {
-        console.log(res);
-    });
-
-passport.authenticate('local', function (req, res) {
-    console.log('ok');
-});
-
-app.post('/login', passport.authenticate('local'),
-    function (req, res) {
-        res.send(req.user);
     });
 
 
