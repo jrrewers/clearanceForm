@@ -9,7 +9,7 @@ module.exports = function (app, passport, mongoose) {
     var test_model = mongoose.model('test');
     var test_model2 = mongoose.model('test2');
     passport.use('local', new localStrategy(function () {
-        var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(username, password, done) {
+        var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(username, password, done) {
             var foundIn_test_model, foundIn_test_model2;
             return regeneratorRuntime.wrap(function _callee$(_context) {
                 while (1) {
@@ -62,7 +62,7 @@ module.exports = function (app, passport, mongoose) {
         }));
 
         return function (_x, _x2, _x3) {
-            return ref.apply(this, arguments);
+            return _ref.apply(this, arguments);
         };
     }()));
 

@@ -6,7 +6,6 @@ let express = require('express');
 let app = express();
 
 let db = require('./model/db')(mongoose);
-require('./model/Mock_Models')(mongoose);
 
 let passport = require('passport');
 let morgan = require('morgan');
@@ -40,16 +39,16 @@ require('./routes/common')(app, passport);
 
 let server = app.listen(3000);
 
-const unhashedPassword = 'hasloa';
+/*const unhashedPassword = 'hasloa';
 const passed = {
     username: '1234567',
     password: bcrypt.hashSync(unhashedPassword),
     group: 'clearance_unit_managers'
-};
+};*/
 
 
-let test_model = mongoose.model('test');
-let test_model2 = mongoose.model('test2');
+/*let test_model = mongoose.model('test');
+let test_model2 = mongoose.model('test2');*/
 
 (async function saveUser(){
     /*try {
@@ -60,11 +59,11 @@ let test_model2 = mongoose.model('test2');
     }*/
 })();
 
-user1
+/*user1
     .post('http://127.0.0.1:3000/login')
     .send({username: '123456', password: 'haslo'})
     .end(function (err, res) {
-    });
+    });*/
 
 
 module.exports.app = app;

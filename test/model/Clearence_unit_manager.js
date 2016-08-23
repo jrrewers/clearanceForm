@@ -1,10 +1,14 @@
 'use strict';
 
-let util = require('../util');
-let clearance_unit_manager = require('../../build/model/Clearance_unit_manager');
+const app = require('../../build/app');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const bcrypt = require('bcryptjs');
+require('../../build/middleware/authorization')(app, passport, mongoose);
 
+const Clearance_unit_manager = mongoose.model('Clearance_unit_manager');
 describe('Clearance Unit Manager', function () {
-    it('adds new Clearance Unit Manager', function *() {
+    it('adds new Clearance Unit Manager', async function () {
         let unhashedPassword = Math.random().toString(36);
         let passed = {
             username: 'Test Clearance Unit',
@@ -14,15 +18,19 @@ describe('Clearance Unit Manager', function () {
             mail: 'mail@mail.com'
         };
 
-        let clearanceUnitManager = yield new clearance_unit_manager(passed).save();
-        clearanceUnitManager.username.should.equal(passed.username);
-        clearanceUnitManager.group.should.equal(passed.group);
-        bcrypt.hashSync(unhashedPassword, clearanceUnitManager.password).should.be.true;
-        clearanceUnitManager.name.should.equal(passed.name);
+        let saved = await Clearance_unit_manager(passed).save();
+        saved.username.should.equal(passed.username);
+        saved.group.should.equal(passed.group);
+        bcrypt.hashSync(unhashedPassword, saved.password).should.equal(true);
+        saved.name.should.equal(passed.name);
 
     });
 
-    it('changes password correctly', function *() {
+    it('adds new clearance unit admin', function *() {
+        /*TODO: test adding new clearance unit admin*/
+    });
+
+    it('changes password correctly', async function () {
         let oldPassword = Math.random().toString(36);
         let newPassword = Math.random().toString(36);
         let passed = {
@@ -33,12 +41,12 @@ describe('Clearance Unit Manager', function () {
             mail: 'mail@mail.com'
         };
 
-        let clearanceUnitManagerSaved = yield new clearance_unit_manager(passed).save();
-        let passwordChangeResult = yield clearance_unit_manager.changePassword(bcrypt.hashSync(newPassword)).exec();
-        let clearanceUnitManagerFound = yield clearance_unit_manager.findById(clearance_unit_manager._id);
+        /*let clearanceUnitManagerSaved = await Clearance_unit_manager(passed).save();
+        let passwordChangeResult = await Clearance_unit_manager.changePassword(bcrypt.hashSync(newPassword)).exec();
+        let clearanceUnitManagerFound = await Clearance_unit_manager.findById(clearance_unit_manager._id);
 
-        passwordChangeResult.should.be.true;
-        bcrypt.hashSync(newPassword, clearanceUnitManagerFound.password).should.be.true;
+        passwordChangeResult.should.equal(true);
+        bcrypt.hashSync(newPassword, clearanceUnitManagerFound.password).should.equal(true);*/
     });
 
     it('gets list of watiting clearance requests', function *() {

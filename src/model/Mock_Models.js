@@ -15,6 +15,6 @@ module.exports = function (mongoose) {
         password: String,
         group: {type: String, enum: ['clearance_unit_managers', 'clearance_unit_admins']}
     });
-    let test_model2 = mongoose.model('test2', test_schema2);
+    mongoose.model('test2', test_schema2);
 };
 

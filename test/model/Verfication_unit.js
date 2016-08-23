@@ -1,13 +1,16 @@
 'use strict';
+'use strict';
 
-let util = require('../util');
-let verification_unit = require('.././Verfication_unit').verification_unit_model;
+const app = require('../../build/app');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const bcrypt = require('bcryptjs');
+require('../../build/middleware/authorization')(app, passport, mongoose);
+
+const Verification_unit = mongoose.model('Verification_unit');
 
 describe('Verification Unit Model', function () {
     it('should add new Verficiation Unit', function *() {
-        let passed = {name: 'Test Verification Unit'};
-    
-        let verificationUnit = yield new verification_unit(passed).save();
-        verificationUnit.name.should.equal(passed.name);
+        /*TODO: test for adding verification unit*/
     });
 });

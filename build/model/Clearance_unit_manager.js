@@ -1,7 +1,16 @@
-"use strict";
+'use strict';
 
-/**
- * Created by Jarek on 2016-07-31.
- */
-module.exports = function () {};
+module.exports = function (mongoose) {
+    var Schema = mongoose.Schema;
+    var clearance_unit_managers_schema = new Schema({
+        clearance_unit_id: { type: Schema.Types.ObjectId, ref: 'Clearance_unit' },
+        username: String,
+        password: String,
+        name: String,
+        mail: { type: String, match: /@/, lowercase: true },
+        group: { type: String, enum: ['clearance_unit_managers', 'clearance_unit_admins'] }
+    });
+
+    mongoose.model('Clearance_unit_manager', clearance_unit_managers_schema);
+};
 //# sourceMappingURL=Clearance_unit_manager.js.map

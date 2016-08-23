@@ -9,7 +9,6 @@ var express = require('express');
 var app = express();
 
 var db = require('./model/db')(mongoose);
-require('./model/Mock_Models')(mongoose);
 
 var passport = require('passport');
 var morgan = require('morgan');
@@ -42,18 +41,18 @@ require('./routes/common')(app, passport);
 
 var server = app.listen(3000);
 
-var unhashedPassword = 'hasloa';
-var passed = {
+/*const unhashedPassword = 'hasloa';
+const passed = {
     username: '1234567',
     password: bcrypt.hashSync(unhashedPassword),
     group: 'clearance_unit_managers'
-};
+};*/
 
-var test_model = mongoose.model('test');
-var test_model2 = mongoose.model('test2');
+/*let test_model = mongoose.model('test');
+let test_model2 = mongoose.model('test2');*/
 
 (function () {
-    var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+    var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
         return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
                 switch (_context.prev = _context.next) {
@@ -66,19 +65,17 @@ var test_model2 = mongoose.model('test2');
     }));
 
     function saveUser() {
-        return ref.apply(this, arguments);
+        return _ref.apply(this, arguments);
     }
 
     return saveUser;
 })()();
 
-/*try {
-    let saved = await new test_model2(passed).save();
-    console.log(saved);
-} catch(e) {
-    console.log(e);
-}*/
-user1.post('http://127.0.0.1:3000/login').send({ username: '123456', password: 'haslo' }).end(function (err, res) {});
+/*user1
+    .post('http://127.0.0.1:3000/login')
+    .send({username: '123456', password: 'haslo'})
+    .end(function (err, res) {
+    });*/
 
 module.exports.app = app;
 //# sourceMappingURL=app.js.map

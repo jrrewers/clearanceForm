@@ -1,5 +1,9 @@
 'use strict';
 module.exports = function (mongoose) {
+
+    require('./Clearance_unit')(mongoose);
+    require('./Clearance_unit_manager')(mongoose);
+    require('./Mock_Models')(mongoose);
     
     let db = {
         development: 'mongodb://localhost:27017/clearanceForm',
