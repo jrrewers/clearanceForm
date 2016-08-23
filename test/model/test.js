@@ -14,7 +14,6 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 let passport = require('passport');
 const localStrategy = require('passport-local');
-const request = require('superagent');
 
 
 describe('test', function () {

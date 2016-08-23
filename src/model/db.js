@@ -12,4 +12,4 @@ module.exports = function (mongoose) {
         console.log("mongodb connection open");
     });
 
-};
+};  

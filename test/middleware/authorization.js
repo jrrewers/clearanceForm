@@ -1,13 +1,16 @@
 'use strict';
 
 let util = require('../util');
-let Auth = require('.././authorization').authorization;
+let app = require('../../build/app');
+let passport = require('passport');
+let mongoose = require('mongoose');
+let Auth = require('../../build/middleware/authorization')(app, passport, mongoose);
 
 describe('Middleware: Authorization', function () {
     
     beforeEach(function () {
         this.request = sinon.stub(http, 'request')
-    })
+    });
 
     it('creates correctly all types of users', function *() {
         let clearance_unit_admin = {

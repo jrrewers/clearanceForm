@@ -1,7 +1,7 @@
 'use strict';
 
 let util = require('../util');
-let clearance_unit_manager = require('.././Clearance_unit_manager').clearance_unit_manager_model;
+let clearance_unit_manager = require('../../build/model/Clearance_unit_manager');
 
 describe('Clearance Unit Manager', function () {
     it('adds new Clearance Unit Manager', function *() {
