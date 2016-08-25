@@ -35,6 +35,7 @@ const user1 = request.agent();
 
 require('./middleware/authorization')(app, passport, mongoose);
 require('./routes/common')(app, passport);
+require('./routes/employee')(app, passport, mongoose);
 
 
 let server = app.listen(3000);

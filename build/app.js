@@ -38,6 +38,7 @@ var user1 = request.agent();
 
 require('./middleware/authorization')(app, passport, mongoose);
 require('./routes/common')(app, passport);
+require('./routes/employee')(app, passport, mongoose);
 
 var server = app.listen(3000);
 

@@ -8,9 +8,11 @@ module.exports = function (mongoose) {
         password: String,
         name: String,
         mail: {type: String, match: /@/, lowercase: true},
+        notification: Boolean,
         group: {type: String, default: 'employees'},
         is_verified: {type: Boolean, default: false}
     });
+
 
     mongoose.model('Employee', employee_schema);
 };

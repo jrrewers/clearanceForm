@@ -4,7 +4,7 @@ module.exports = function (mongoose) {
     let Schema = mongoose.Schema;
     let review_schema = new Schema({
         clearance_unit_id: {type: Schema.Types.ObjectId, ref: 'Clearance_unit'},
-        employee_id: {type: Schema.Types.ObjectId, ref: employee},
+        employee_id: {type: Schema.Types.ObjectId, ref: 'Employee'},
         requested_timestamp: Date,
         is_waiting: Boolean,
         clearance_unit_manager_id: {type: Schema.Types.ObjectId, ref: 'Clearance_unit_manager'},
