@@ -1,8 +1,9 @@
 'use strict';
 
-module.exports = function (mongoose) {
+module.exports = function (mongoose, autoIncrement) {
     let Schema = mongoose.Schema;
     let clearance_unit_schema = new Schema({
+        _id: Number,
         name: String
     });
 

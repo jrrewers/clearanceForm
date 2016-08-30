@@ -20,6 +20,7 @@
     "express": "4.13.4",
     "express-session": "1.13.0",
     "mongoose": "4.4.19",
+    "mongoose-auto-increment": "5.0.1",
     "morgan": "1.7.0",
     "passport": "0.3.2",
     "passport-local": "1.0.0"
@@ -35,6 +36,7 @@
     "gulp": "3.9.1",
     "gulp-babel": "6.1.2",
     "gulp-cached": "1.1.0",
+    "gulp-plumber": "1.1.0",
     "gulp-print": "2.0.1",
     "mocha": "2.5.3",
     "should": "8.4.0",

@@ -1,9 +1,10 @@
 'use strict';
 
-module.exports = function (mongoose) {
+module.exports = function (mongoose, autoIncrement) {
     let Schema = mongoose.Schema;
     let verification_unit_managers_schema = new Schema({
-        verification_unit_id: {type: Schema.Types.ObjectId, ref: 'Verification_unit'},
+        _id: Number,
+        verification_unit_id: {type: Number, ref: 'Verification_unit'},
         username: String,
         password: String,
         name: String,

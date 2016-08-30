@@ -1,11 +1,13 @@
 'use strict';
 let gulp = require('gulp');
 let print = require('gulp-print');
+let plumber = require('gulp-plumber');
 let cache = require('gulp-cached');
 let babel = require('gulp-babel');
 
 gulp.task('js', function () {
     gulp.src('src/**/*.js')
+        .pipe(plumber())
         .pipe(cache('js'))
         .pipe(print())
         .pipe(babel({presets: ['es2015', 'stage-3'] }))

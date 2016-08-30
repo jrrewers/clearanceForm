@@ -1,7 +1,7 @@
 /**
  * Created by Jarek on 2016-07-31.
  */
-module.exports = function (mongoose) {
+module.exports = function (mongoose, autoIncrement) {
     let Schema = mongoose.Schema;
     let test_schema = new Schema({
         username: String,

@@ -1,5 +1,5 @@
 'use strict';
-const babelPolyfill = require('babel-polyfill');
+require('babel-polyfill');
 const mongoose = require('mongoose');
 
 let express = require('express');
@@ -12,8 +12,6 @@ let morgan = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser   = require('body-parser');
 let session      = require('express-session');
-
-const bcrypt = require('bcryptjs');
 
 app.use('/public', express.static('public'));
 app.set('view engine', 'ejs');
@@ -31,14 +29,14 @@ app.use(passport.session());
 app.use(require('connect-flash')());
 
 const request = require('superagent');
-const user1 = request.agent();
+//const user1 = request.agent();
 
 require('./middleware/authorization')(app, passport, mongoose);
 require('./routes/common')(app, passport);
 require('./routes/employee')(app, passport, mongoose);
 
 
-let server = app.listen(3000);
+app.listen(3000);
 
 /*const unhashedPassword = 'hasloa';
 const passed = {
@@ -68,3 +66,7 @@ let test_model2 = mongoose.model('test2');*/
 
 
 module.exports.app = app;
+process.on('unhandledRejection', function(reason, p) {
+    console.log("Unhandled Rejection at: ", p, " reason: ", reason);
+    // application specific logging, throwing an error, or other logic here
+});
