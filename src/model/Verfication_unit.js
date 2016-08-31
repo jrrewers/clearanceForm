@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (mongoose, autoIncrement) {
+module.exports = function (mongoose) {
     let Schema = mongoose.Schema;
     let verification_unit_schema = new Schema({
         _id: Number,

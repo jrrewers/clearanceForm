@@ -24,7 +24,6 @@ module.exports = function (app, passport, mongoose) {
             employee_id: req.body.employee_id,
             is_waiting: true
         }).exec();
-        console.log(foundOtherWaitingClearanceRequests);
 
         if (foundOtherWaitingClearanceRequests.length !== 0) {
             AjaxResponse.success = false;
@@ -36,14 +35,12 @@ module.exports = function (app, passport, mongoose) {
         requestedClearanceUnits.forEach(function (requestedClearanceUnit) {
             let reqObj = {
                 clearance_unit_id: requestedClearanceUnit,
-                //employee_id: req.user._id,
                 employee_id: req.body.employee_id,
                 requested_timestamp: Date.now(),
                 is_waiting: true
             };
             ClearanceRequestsArr.push(reqObj);
         });
-        console.log(ClearanceRequestsArr);
 
         //using Model.insertMany insert array of request objects to db
         let insertManyRequestes = await Review.insertMany(ClearanceRequestsArr);

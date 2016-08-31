@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (mongoose, autoIncrement) {
+module.exports = function (mongoose) {
     let Schema = mongoose.Schema;
     let review_schema = new Schema({
         clearance_unit_id: {type: Number, ref: 'Clearance_unit', required: true},
@@ -17,6 +17,5 @@ module.exports = function (mongoose, autoIncrement) {
     });
 
     mongoose.model('Review', review_schema);
-    review_schema.plugin(autoIncrement.plugin, {model: 'Review', field: '_id'});
-};
+}
 

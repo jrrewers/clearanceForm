@@ -1,5 +1,5 @@
 'use strict';
-module.exports = function (mongoose, autoIncrement) {
+module.exports = function (mongoose) {
     let Schema = mongoose.Schema;
     let system_admin_schema = new Schema({
         _id: Number,
