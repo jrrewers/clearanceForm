@@ -17,5 +17,5 @@ module.exports = function (mongoose) {
     });
 
     mongoose.model('Review', review_schema);
-}
+};
 

@@ -11,7 +11,7 @@ require('../build/middleware/authorization')(app, passport, mongoose);
 
 describe('test', function () {
 
-    /*it('should create and authenticate user', async function () {
+    it('should create and authenticate user', async function () {
         let test_model = mongoose.model('test');
 
         const unhashedPassword = Math.random().toString(36);
@@ -30,7 +30,7 @@ describe('test', function () {
 
     afterEach(function () {
         console.log("test finished");
-    });*/
+    });
 
 
 });

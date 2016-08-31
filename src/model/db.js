@@ -14,7 +14,7 @@ module.exports = function (mongoose) {
         test: 'mongodb://localhost:27017/clearanceForm-test'
     };
 
-    let MongoDB = mongoose.connect(db.test).connection;
+    let MongoDB = mongoose.connect(db.development).connection;
     MongoDB.on('error', function(err) { console.log(err.message); });
     MongoDB.once('open', function() {
         console.log('mongodb connection open');
