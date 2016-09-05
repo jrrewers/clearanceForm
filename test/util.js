@@ -24,8 +24,3 @@ beforeEach(async function (done) {
         clearDB();
     }
 });
-
-afterEach(function (done) {
-    mongoose.disconnect();
-    return done();
-});

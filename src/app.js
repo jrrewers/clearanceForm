@@ -28,41 +28,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(require('connect-flash')());
 
-const request = require('superagent');
-//const user1 = request.agent();
-
 require('./middleware/authorization')(app, passport, mongoose);
 require('./routes/common')(app, passport);
-require('./routes/employee')(app, passport, mongoose);
+require('./routes/review')(app, passport, mongoose);
 
 
 app.listen(3000);
 
-/*const unhashedPassword = 'hasloa';
-const passed = {
-    username: '1234567',
-    password: bcrypt.hashSync(unhashedPassword),
-    group: 'clearance_unit_managers'
-};*/
-
-
-/*let test_model = mongoose.model('test');
-let test_model2 = mongoose.model('test2');*/
 
 (async function saveUser(){
-    /*try {
-        let saved = await new test_model2(passed).save();
+    /*const Clearance_unit = mongoose.model('Clearance_unit');
+
+    try {
+        let saved = await new Clearance_unit({_id: 5, name: 'Biblioteka Zbiorów Specjalnych'}).save();
         console.log(saved);
     } catch(e) {
         console.log(e);
     }*/
 })();
 
-/*user1
-    .post('http://127.0.0.1:3000/login')
-    .send({username: '123456', password: 'haslo'})
-    .end(function (err, res) {
-    });*/
 
 
 module.exports.app = app;

@@ -52,18 +52,38 @@ module.exports = function (app, passport, mongoose) {
     });
 
     app.post('/myChecklist', async function (req, res) {
-        console.log(req.body);
         let AjaxResponse = {};
+        let requestedClearanceUnits = [];
+
+        //fetch all user reviews
         let userReviews = await Review.find({
             employee_id: req.body.user_id
         })
             .populate('clearance_unit_id')
             .exec();
 
-        let clearanceUnits = await ClearanceUnit.find().exec();
-        res.send({userReviews: userReviews, clearanceUnits: clearanceUnits});
-        if (userReviews.length === 0) {
+        //iterate through all user reviews, if one is waiting or not waiting but positively reviewed add id of clearance unit from this review to array.
+        userReviews.forEach(function (userReview) {
+            if (userReview.is_waiting || !userReview.is_waiting && !userReview.review) {
+                requestedClearanceUnits.push(userReview.clearance_unit_id._id)
+            }
+        });
 
-        }
+        //fetch all clearance units and add mayBeRequested property to each of them so the can later be disabled for request on front end.
+        let employeeClearanceUnits = await ClearanceUnit.find().lean().exec();
+        employeeClearanceUnits.forEach(function (EmployeeClearanceUnit) {
+            if (requestedClearanceUnits.indexOf(EmployeeClearanceUnit._id) !== -1) {
+                EmployeeClearanceUnit.mayBeRequested = false;
+            }
+        });
+
+        AjaxResponse = {
+            success: true,
+            userReviews: userReviews,
+            clearanceUnits: employeeClearanceUnits
+        };
+
+        res.send(AjaxResponse);
+
     });
 };
