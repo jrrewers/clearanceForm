@@ -51,7 +51,7 @@ module.exports = function (app, passport, mongoose) {
         return res.send(AjaxResponse);
     });
 
-    app.post('/myChecklist', async function (req, res) {
+    app.post('/employeeChecklist', async function (req, res) {
         let AjaxResponse = {};
         let requestedClearanceUnits = [];
 

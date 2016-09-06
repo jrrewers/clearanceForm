@@ -7,7 +7,7 @@ module.exports = function (mongoose) {
         password: String,
         name: String,
         mail: {type: String, match: /@/, lowercase: true},
-        group: {type: String, default: 'system_admin'}
+        group: {type: String, default: 'system_admins'}
     });
 
     mongoose.model('System_admin', system_admin_schema);
