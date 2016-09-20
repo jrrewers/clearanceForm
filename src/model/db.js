@@ -9,12 +9,12 @@ module.exports = function (mongoose) {
     require('./Verification_unit_manager')(mongoose);
     require('./Mock_Models')(mongoose);
 
-    let db = {
+    const db = {
         development: 'mongodb://localhost:27017/clearanceForm',
         test: 'mongodb://localhost:27017/clearanceForm-test'
     };
 
-    let MongoDB = mongoose.connect(db.development).connection;
+    let MongoDB = mongoose.connect(db.test).connection;
     MongoDB.on('error', function(err) { console.log(err.message); });
     MongoDB.once('open', function() {
         console.log('mongodb connection open');

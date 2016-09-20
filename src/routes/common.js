@@ -5,7 +5,7 @@ module.exports = function (app, passport) {
     app.post('/login', pauth('local'), function (req, res) {
             res.send(req.user);
     });
-    app.post('/registerUser', )
+    //app.post('/registerUser', )
 };
 
 

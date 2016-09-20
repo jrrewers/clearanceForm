@@ -10,7 +10,7 @@ module.exports = function (app, passport, mongoose) {
         let ClearanceRequestsArr = [];
         let requestedClearanceUnits = [];
 
-        if (!req.body.requestedClearanceUnits || !req.body.user._id ) {
+        if (!req.body.requestedClearanceUnits || !req.body.userToAffect ) {
             AjaxResponse.success = false;
             AjaxResponse.err = 'Missing array of requested Clearance Units or employee id';
             return res.send(AjaxResponse);
@@ -22,7 +22,7 @@ module.exports = function (app, passport, mongoose) {
         });
         let foundOtherWaitingClearanceRequests = await Review.find({
             clearance_unit_id: {$in: requestedClearanceUnits},
-            employee_id: req.body.user._id,
+            employee_id: req.body.userToAffect,
             is_waiting: true
         }).exec();
 
@@ -36,7 +36,7 @@ module.exports = function (app, passport, mongoose) {
         requestedClearanceUnits.forEach(function (requestedClearanceUnit) {
             let reqObj = {
                 clearance_unit_id: requestedClearanceUnit,
-                employee_id: req.body.user._id,
+                employee_id: req.body.userToAffect,
                 requested_timestamp: Date.now(),
                 is_waiting: true
             };
@@ -57,15 +57,21 @@ module.exports = function (app, passport, mongoose) {
 
         //fetch all user reviews
         let userReviews = await Review.find({
-            employee_id: req.body.user_id
+            employee_id: req.body.userToAffect,
         })
-            .populate('clearance_unit_id')
+        //TODO: commented for test, it should be populated
+            //.populate('clearance_unit_id')
             .exec();
-
         //iterate through all user reviews, if one is waiting or not waiting but positively reviewed add id of clearance unit from this review to array.
         userReviews.forEach(function (userReview) {
             if (userReview.is_waiting || !userReview.is_waiting && !userReview.review) {
-                requestedClearanceUnits.push(userReview.clearance_unit_id._id)
+                if (userReview.clearance_unit_id._id) {
+                    requestedClearanceUnits.push(userReview.clearance_unit_id._id)
+                } else {
+                    //TODO: only for test, delete
+                    requestedClearanceUnits.push(userReview.clearance_unit_id)
+                }
+
             }
         });
 
