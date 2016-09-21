@@ -16,7 +16,8 @@ describe('Review routes', function () {
     const sendClearanceRequestUrl = '127.0.0.1:3000/sendClearanceRequest';
     const getEmployeeChecklistUrl = '127.0.0.1:3000/employeeChecklist';
 
-    it('should correctly send a clearance request', async function (done) {
+    /*sendReviewRequest*/
+    it('sends a clearance request', async function (done) {
         superAgent
             .post(sendClearanceRequestUrl)
             .send({
@@ -59,7 +60,7 @@ describe('Review routes', function () {
             });
     });
 
-    it('should not allow to send two same clearance unit numbers at once', function (done) {
+    it('not allows to send two same clearance unit numbers at once', function (done) {
         superAgent
             .post(sendClearanceRequestUrl)
             .send({
@@ -75,7 +76,7 @@ describe('Review routes', function () {
         })
     });
 
-    it('should not allow to send request for clearance unit if user already has one waiting request for this clearance unit', function (done) {
+    it('not allows to send request for clearance unit if user already has one waiting request for this clearance unit', function (done) {
         superAgent
             .post(sendClearanceRequestUrl)
             .send({
@@ -101,7 +102,8 @@ describe('Review routes', function () {
 
     });
 
-    it('should return correct data about employee reviews and clearance unit', async function (done) {
+    /*getEmployeeReviewsAndClearanceUnits*/
+    it('returns data about employee reviews and clearance unit', async function (done) {
         const mock_review_1 = {
             clearance_unit_id: clearanceUnitNumber,
             employee_id: userToAffect,
@@ -143,5 +145,18 @@ describe('Review routes', function () {
             })
 
     });
+
+    /*getPendingReviewRequests*/
+    it('returnes a pending clearance requests and - if CU calls them - lock them, if sysadmin - show all and not lock', function (done) {
+        /*TODO: test for getting pending clearance requests*/
+        done();
+    });
+
+    /*clearReviewPendingLock*/
+    it('clears lock for pending reviews', function (done) {
+        /*TODO: test for clearing pending review lock*/
+        done();
+    });
+
 });
 
