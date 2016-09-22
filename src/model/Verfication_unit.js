@@ -3,7 +3,6 @@
 module.exports = function (mongoose) {
     let Schema = mongoose.Schema;
     let verification_unit_schema = new Schema({
-        _id: Number,
         name: String
     });
 

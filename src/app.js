@@ -29,7 +29,7 @@ app.use(passport.session());
 app.use(require('connect-flash')());
 
 require('./middleware/authorization')(app, passport, mongoose);
-require('./routes/common')(app, passport);
+require('./routes/common')(app, passport, mongoose);
 require('./routes/review')(app, passport, mongoose);
 
 

@@ -2,7 +2,6 @@
 module.exports = function (mongoose) {
     let Schema = mongoose.Schema;
     let system_admin_schema = new Schema({
-        _id: Number,
         username: String,
         password: String,
         name: String,

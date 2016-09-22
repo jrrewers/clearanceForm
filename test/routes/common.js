@@ -40,7 +40,7 @@ describe('Common routes', function () {
     let employee = {
         username: 'employee',
         password: bcrypt.hashSync(unHashedPassword),
-        group: 'employee'
+        group: 'employees'
     };
     let system_admin = {
         username: 'system_admin',
@@ -48,14 +48,15 @@ describe('Common routes', function () {
         group: 'system_admins'
     };
 
+
     /*registerUser*/
     it('creates all types of users', function (done) {
-        let verification_unit_adminPromise = request.post(registerUserUrl).send(verification_unit_admin).end();
-        let verification_unit_managerPromise = request.post(registerUserUrl).send(verification_unit_manager).end();
-        let clearance_unit_adminPromise = request.post(registerUserUrl).send(clearance_unit_admin).end();
-        let clearance_unit_managerPromise = request.post(registerUserUrl).send(clearance_unit_manager).end();
-        let employeePromise = request.post(registerUserUrl).send(employee).end();
-        let system_adminPromise = request.post(registerUserUrl).send(system_admin).end();
+        let verification_unit_adminPromise = request.post(registerUserUrl).send({userToSave: verification_unit_admin}).end();
+        let verification_unit_managerPromise = request.post(registerUserUrl).send({userToSave: verification_unit_manager}).end();
+        let clearance_unit_adminPromise = request.post(registerUserUrl).send({userToSave: clearance_unit_admin}).end();
+        let clearance_unit_managerPromise = request.post(registerUserUrl).send({userToSave: clearance_unit_manager}).end();
+        let employeePromise = request.post(registerUserUrl).send({userToSave: employee}).end();
+        let system_adminPromise = request.post(registerUserUrl).send({userToSave: system_admin}).end();
 
         Promise.all([
             verification_unit_adminPromise,
@@ -64,8 +65,15 @@ describe('Common routes', function () {
             clearance_unit_managerPromise,
             employeePromise,
             system_adminPromise
-        ]).then(function (values) {
-            console.log(values);
+        ]).then(async function (values) {
+            values.forEach(value => console.log(value.text));
+            let found_verification_unit_admin = await Verification_unit_manager.findById(values[0]._id);
+            let found_verification_unit_manager = await Verification_unit_manager.findById(values[1]._id);
+            let found_clearance_unit_admin = await Clearance_unit_manager.findById(values[2]._id);
+            let found_employee = await employee.findById(values[4]._id);
+            let found_system_admin = await System_admin.findById(values[5]._id);
+
+            found_verification_unit_admin.username.should.eql(verification_unit_admin.username);
             done();
         }).catch(function (err) {
             done(err);
