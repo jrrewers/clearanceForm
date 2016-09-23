@@ -6,8 +6,8 @@ module.exports = function (mongoose) {
         verification_unit_id: {type: Number, ref: 'Verification_unit'},
         username: String,
         password: String,
-        name: String,
-        mail: {type: String, match: /@/, lowercase: true},
+        name: {type: String, required: 'name is required'},
+        mail: {type: String, match: /@/, lowercase: true, unique: true, required: 'mail is required'},
         group: {type: String, enum: ['verification_unit_managers', 'verification_unit_admins']}
     });
 

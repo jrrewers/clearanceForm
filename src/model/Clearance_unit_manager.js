@@ -5,8 +5,8 @@ module.exports = function (mongoose) {
         clearance_unit_id: {type: Number, ref: 'Clearance_unit'},
         username: String,
         password: String,
-        name: String,
-        mail: {type: String, match: /@/, lowercase: true},
+        name: {type: String, required: 'name is required'},
+        mail: {type: String, match: /@/, lowercase: true, required: 'mail is required', unique: true},
         group: {type: String, enum: ['clearance_unit_managers', 'clearance_unit_admins']}
 });
 
