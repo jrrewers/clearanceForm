@@ -52,5 +52,4 @@ app.listen(3000);
 module.exports.app = app;
 process.on('unhandledRejection', function(reason, p) {
     console.log("Unhandled Rejection at: ", p, " reason: ", reason);
-    // application specific logging, throwing an error, or other logic here
 });

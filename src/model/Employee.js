@@ -12,7 +12,6 @@ module.exports = function (mongoose) {
         group: {type: String, default: 'employees'},
         is_verified: {type: Boolean, default: false}
     });
-
-
+    
     mongoose.model('Employee', employee_schema);
 };

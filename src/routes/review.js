@@ -3,57 +3,57 @@
 module.exports = function (app, passport, mongoose) {
     //const pauth = passport.authenticate.bind(passport);
     const Review = mongoose.model('Review');
-    const ClearanceUnit = mongoose.model('Clearance_unit');
+    const CUModel = mongoose.model('Clearance_unit');
 
     app.post('/sendClearanceRequest', /*pauth('local'),*/ async function (req, res) {
-        let AjaxResponse = {};
-        let ClearanceRequestsArr = [];
-        let requestedClearanceUnits = [];
+        let response = {};
+        let requestsArr = [];
+        let requestedCUs = [];
 
         if (!req.body.requestedClearanceUnits || !req.body.userToAffect ) {
-            AjaxResponse.success = false;
-            AjaxResponse.err = 'Missing array of requested Clearance Units or employee id';
-            return res.send(AjaxResponse);
+            response.success = false;
+            response.err = 'Missing array of requested Clearance Units or employee id';
+            return res.send(response);
         }
 
         // make sure employee has not waiting request for selected clearance units now
-        req.body.requestedClearanceUnits.forEach(function(requestedClearanceUnit){
-            requestedClearanceUnits.push(Number(requestedClearanceUnit.substr(14)));
+        req.body.requestedClearanceUnits.forEach(function(requestedCU){
+            requestedCUs.push(Number(requestedCU.substr(14)));
         });
-        let foundOtherWaitingClearanceRequests = await Review.find({
-            clearance_unit_id: {$in: requestedClearanceUnits},
+        let conflictingRequests = await Review.find({
+            clearance_unit_id: {$in: requestedCUs},
             employee_id: req.body.userToAffect,
             is_waiting: true
         }).exec();
 
-        if (foundOtherWaitingClearanceRequests.length !== 0) {
-            AjaxResponse.success = false;
-            AjaxResponse.err = 'At least one duplicate request was found. Query wasn\'t executed. Details: ' + foundOtherWaitingClearanceRequests;
-            return res.send(AjaxResponse);
+        if (conflictingRequests.length !== 0) {
+            response.success = false;
+            response.err = 'At least one duplicate request was found. Query wasn\'t executed. Details: ' + conflictingRequests;
+            return res.send(response);
         }
 
         //create an array of objects where each objects represents a request to save
-        requestedClearanceUnits.forEach(function (requestedClearanceUnit) {
+        requestedCUs.forEach(function (requestedCU) {
             let reqObj = {
-                clearance_unit_id: requestedClearanceUnit,
+                clearance_unit_id: requestedCU,
                 employee_id: req.body.userToAffect,
                 requested_timestamp: Date.now(),
                 is_waiting: true
             };
-            ClearanceRequestsArr.push(reqObj);
+            requestsArr.push(reqObj);
         });
 
         //using Model.insertMany insert array of request objects to db
-        let insertManyRequests = await Review.insertMany(ClearanceRequestsArr);
-        AjaxResponse.success = true;
-        AjaxResponse._ids = [];
-        insertManyRequests.forEach(requested => AjaxResponse._ids.push(requested.clearance_unit_id));
-        return res.send(AjaxResponse);
+        let insertManyRequests = await Review.insertMany(requestsArr);
+        response.success = true;
+        response._ids = [];
+        insertManyRequests.forEach(requested => response._ids.push(requested.clearance_unit_id));
+        return res.send(response);
     });
 
     app.post('/employeeChecklist', async function (req, res) {
-        let AjaxResponse = {};
-        let requestedClearanceUnits = [];
+        let response = {};
+        let requestedCUs = [];
 
         //fetch all user reviews
         let userReviews = await Review.find({
@@ -66,30 +66,30 @@ module.exports = function (app, passport, mongoose) {
         userReviews.forEach(function (userReview) {
             if (userReview.is_waiting || !userReview.is_waiting && !userReview.review) {
                 if (userReview.clearance_unit_id._id) {
-                    requestedClearanceUnits.push(userReview.clearance_unit_id._id)
+                    requestedCUs.push(userReview.clearance_unit_id._id)
                 } else {
                     //TODO: only for test, delete
-                    requestedClearanceUnits.push(userReview.clearance_unit_id)
+                    requestedCUs.push(userReview.clearance_unit_id)
                 }
 
             }
         });
 
         //fetch all clearance units and add mayBeRequested property to each of them so the can later be disabled for request on front end.
-        let employeeClearanceUnits = await ClearanceUnit.find().lean().exec();
-        employeeClearanceUnits.forEach(function (EmployeeClearanceUnit) {
-            if (requestedClearanceUnits.indexOf(EmployeeClearanceUnit._id) !== -1) {
-                EmployeeClearanceUnit.mayBeRequested = false;
+        let employeeCUs = await CUModel.find().lean().exec();
+        employeeCUs.forEach(function (employeeCU) {
+            if (requestedCUs.indexOf(employeeCU._id) !== -1) {
+                employeeCU.mayBeRequested = false;
             }
         });
 
-        AjaxResponse = {
+        response = {
             success: true,
             userReviews: userReviews,
-            clearanceUnits: employeeClearanceUnits
+            clearanceUnits: employeeCUs
         };
 
-        res.send(AjaxResponse);
+        res.send(response);
 
     });
 };
