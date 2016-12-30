@@ -1,6 +1,7 @@
 'use strict';
 require('babel-polyfill');
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 let express = require('express');
 let app = express();
@@ -36,16 +37,34 @@ require('./routes/review')(app, passport, mongoose);
 app.listen(3000);
 
 
-(async function saveUser(){
-    /*const Clearance_unit = mongoose.model('Clearance_unit');
+(async function createMockDatabase(){
+    /*const Verficiation_Unit = mongoose.model('Verification_unit');
+    const Employee = mongoose.model('Employee');
+    const Clearance_unit = mongoose.model('Clearance_unit');*/
 
-    try {
-        let saved = await new Clearance_unit({_id: 5, name: 'Biblioteka Zbiorów Specjalnych'}).save();
-        console.log(saved);
-    } catch(e) {
-        console.log(e);
-        test
-    }*/
+    /*const CUsToSave = [
+        {name: 'Biblioteka Zbiorów Specjalnych'},
+        {name: 'Pływalnia Uniwersytecka'},
+        {name: 'Akademik Jowita'},
+        {name: 'Stołówka Wydziału Nauk Społecznych'}
+    ];
+    let savedCUs = await Clearance_unit.insertMany(CUsToSave);
+    console.log(savedCUs);*/
+
+    /*const savedVU = await new Verficiation_Unit({name: 'Wydział Nauk Społecznych'}).save();
+    console.log(savedVU);*/
+
+    /*let verification_unit_id = await Verficiation_Unit.findOne({name: 'Wydział Nauk Społecznych'}).exec();
+    verification_unit_id = verification_unit_id._id;
+    const employeeToSave = {
+        verification_unit_id: verification_unit_id,
+        username: 'user',
+        password: bcrypt.hashSync('password'),
+        name: 'Jan Kowalski',
+        mail: 'example@mail.com'
+    };
+    let savedEmployee = await new Employee(employeeToSave).save();
+    console.log(savedEmployee);*/
 })();
 
 

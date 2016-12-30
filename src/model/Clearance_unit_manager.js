@@ -2,7 +2,7 @@
 module.exports = function (mongoose) {
     let Schema = mongoose.Schema;
     let clearance_unit_managers_schema = new Schema({
-        clearance_unit_id: {type: Number, ref: 'Clearance_unit'},
+        clearance_unit_id: {type: Schema.Types.ObjectId, ref: 'Clearance_unit'},
         username: String,
         password: String,
         name: {type: String, required: 'name is required'},

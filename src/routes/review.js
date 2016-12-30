@@ -9,6 +9,8 @@ module.exports = function (app, passport, mongoose) {
         let response = {};
         let requestsArr = [];
         let requestedCUs = [];
+        console.log(req.body.requestedClearanceUnits[0].substr(14));
+
 
         if (!req.body.requestedClearanceUnits || !req.body.userToAffect ) {
             response.success = false;
@@ -18,7 +20,7 @@ module.exports = function (app, passport, mongoose) {
 
         // make sure employee has not waiting request for selected clearance units now
         req.body.requestedClearanceUnits.forEach(function(requestedCU){
-            requestedCUs.push(Number(requestedCU.substr(14)));
+            requestedCUs.push(requestedCU.substr(14));
         });
         let conflictingRequests = await Review.find({
             clearance_unit_id: {$in: requestedCUs},
@@ -54,39 +56,30 @@ module.exports = function (app, passport, mongoose) {
     app.post('/employeeChecklist', async function (req, res) {
         let response = {};
         let requestedCUs = [];
+        console.log(req.body);
 
         //fetch all user reviews
-        let userReviews = await Review.find({
-            employee_id: req.body.userToAffect,
-        })
-        //TODO: commented for test, it should be populated
-            //.populate('clearance_unit_id')
-            .exec();
-        //iterate through all user reviews, if one is waiting or not waiting but positively reviewed add id of clearance unit from this review to array.
-        userReviews.forEach(function (userReview) {
-            if (userReview.is_waiting || !userReview.is_waiting && !userReview.review) {
-                if (userReview.clearance_unit_id._id) {
-                    requestedCUs.push(userReview.clearance_unit_id._id)
-                } else {
-                    //TODO: only for test, delete
-                    requestedCUs.push(userReview.clearance_unit_id)
-                }
+        let userReviews = await Review.find({employee_id: req.body.userToAffect}).populate('clearance_unit_id').exec();
 
+        //iterate through all user reviews, if one is waiting or positively reviewed add id of clearance unit from this review to array.
+        userReviews.forEach(function (userReview) {
+            /*TODO: create mongoose method for that*/
+            if (userReview.is_waiting || !userReview.is_waiting && !userReview.review) {
+                requestedCUs.push(userReview.clearance_unit_id._id)
             }
         });
 
         //fetch all clearance units and add mayBeRequested property to each of them so the can later be disabled for request on front end.
-        let employeeCUs = await CUModel.find().lean().exec();
-        employeeCUs.forEach(function (employeeCU) {
-            if (requestedCUs.indexOf(employeeCU._id) !== -1) {
-                employeeCU.mayBeRequested = false;
-            }
-        });
+        let availCUs = await CUModel.find().lean().exec();
+        console.log(1, requestedCUs);
+        console.log(2, availCUs);
+        /*TODO: comparing not working due to objectID/String type mismatch*/
+        availCUs.forEach(availCU => availCU.mayBeRequested = requestedCUs.indexOf(availCU._id) === -1);
 
         response = {
             success: true,
             userReviews: userReviews,
-            clearanceUnits: employeeCUs
+            clearanceUnits: availCUs
         };
 
         res.send(response);

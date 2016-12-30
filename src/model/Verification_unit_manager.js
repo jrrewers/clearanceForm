@@ -3,7 +3,7 @@
 module.exports = function (mongoose) {
     let Schema = mongoose.Schema;
     let verification_unit_managers_schema = new Schema({
-        verification_unit_id: {type: Number, ref: 'Verification_unit'},
+        verification_unit_id: {type: Schema.Types.ObjectId, ref: 'Verification_unit'},
         username: String,
         password: String,
         name: {type: String, required: 'name is required'},
