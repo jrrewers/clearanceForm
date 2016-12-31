@@ -38,5 +38,6 @@ jspm_packages
 
 .idea
 build
-\~$*.xlsx
-\~$*.rtf
+.gulp-cache
+*.xlsx
+*.rtf
