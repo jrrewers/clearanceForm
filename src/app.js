@@ -36,25 +36,24 @@ require('./routes/review')(app, passport, mongoose);
 
 app.listen(3000);
 
-
 (async function createMockDatabase(){
-    /*const Verficiation_Unit = mongoose.model('Verification_unit');
+    /*const Verificiation_Unit = mongoose.model('Verification_unit');
     const Employee = mongoose.model('Employee');
-    const Clearance_unit = mongoose.model('Clearance_unit');*/
+    const Clearance_unit = mongoose.model('Clearance_unit');
 
-    /*const CUsToSave = [
+    const CUsToSave = [
         {name: 'Biblioteka Zbiorów Specjalnych'},
         {name: 'Pływalnia Uniwersytecka'},
         {name: 'Akademik Jowita'},
         {name: 'Stołówka Wydziału Nauk Społecznych'}
     ];
     let savedCUs = await Clearance_unit.insertMany(CUsToSave);
-    console.log(savedCUs);*/
+    console.log(savedCUs);
 
-    /*const savedVU = await new Verficiation_Unit({name: 'Wydział Nauk Społecznych'}).save();
-    console.log(savedVU);*/
+    const savedVU = await new Verificiation_Unit({name: 'Wydział Nauk Społecznych'}).save();
+    console.log(savedVU);
 
-    /*let verification_unit_id = await Verficiation_Unit.findOne({name: 'Wydział Nauk Społecznych'}).exec();
+    let verification_unit_id = await Verificiation_Unit.findOne({name: 'Wydział Nauk Społecznych'}).exec();
     verification_unit_id = verification_unit_id._id;
     const employeeToSave = {
         verification_unit_id: verification_unit_id,
