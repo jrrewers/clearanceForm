@@ -18,15 +18,15 @@ app.use('/public', express.static('public'));
 app.set('view engine', 'ejs');
 app.use(morgan('dev'));
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
 app.use(session({
     secret: 'zażółćgęśląjaźń',
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.use(require('connect-flash')());
 
 require('./middleware/authorization')(app, passport, mongoose);
@@ -68,6 +68,7 @@ app.listen(3000);
 
     let CU = await Clearance_unit.findOne().exec();
     const CUManagerToSave = {
+        clearance_unit_id: CU._id,
         username: 'CUManager',
         password: bcrypt.hashSync('CUManager'),
         name: 'Jan Kowalski, CU Manager',

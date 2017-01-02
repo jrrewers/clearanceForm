@@ -13,7 +13,7 @@ module.exports = function (mongoose) {
         review: Boolean,
         is_locked: Boolean,
         locked_timestamp: Date,
-        locked_by_cu_manager_id: {type: Number, ref: 'Clearance_unit_manager'},
+        locked_by_cu_manager_id: {type: Schema.Types.ObjectId, ref: 'Clearance_unit_manager'},
     });
 
     //does this review block from sending clearance request for review clearance unit?

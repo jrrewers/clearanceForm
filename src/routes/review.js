@@ -5,7 +5,7 @@ module.exports = function (app, passport, mongoose) {
     const Review = mongoose.model('Review');
     const CUModel = mongoose.model('Clearance_unit');
 
-    app.post('/sendClearanceRequest', pauth() ,async function (req, res) {
+    app.post('/sendClearanceRequest', pauth('local'), async function (req, res) {
         let response = {};
         let requestsArr = [];
         let requestedCUs = req.body.requestedClearanceUnits;
@@ -18,7 +18,9 @@ module.exports = function (app, passport, mongoose) {
         }
 
         // make sure employee has not waiting request for selected clearance units now
-        requestedCUs = requestedCUs.map((element) => {return element.substr(14)});
+        requestedCUs = requestedCUs.map((element) => {
+            return element.substr(14)
+        });
         let conflictingRequests = await Review.find({
             clearance_unit_id: {$in: requestedCUs},
             employee_id: employee_id,
@@ -44,11 +46,13 @@ module.exports = function (app, passport, mongoose) {
         //using Model.insertMany insert array of request objects to db
         let savedRequests = await Review.insertMany(requestsArr);
         response.success = true;
-        response._ids = savedRequests.map((element) => {return element.clearance_unit_id});
+        response._ids = savedRequests.map((element) => {
+            return element.clearance_unit_id
+        });
         return res.send(response);
     });
 
-    app.post('/employeeChecklist', async function (req, res) {
+    app.post('/employeeChecklist', pauth('local'), async function (req, res) {
         let response = {};
         let requestedCUs = [];
 
@@ -57,7 +61,7 @@ module.exports = function (app, passport, mongoose) {
             .populate('clearance_unit_id').exec();
 
         //iterate through all user reviews, if one is waiting or positively reviewed add id of clearance unit from this review to array.
-        userReviews.forEach((uReview) =>{
+        userReviews.forEach((uReview) => {
             requestedCUs.push(uReview.clearance_unit_id._id.toString())
         });
 
@@ -75,7 +79,50 @@ module.exports = function (app, passport, mongoose) {
 
     });
 
-    app.post('/test', passport.authenticate('local'), async function (req,res) {
-        res.send(req.body);
-    })
+    app.post('/getWaitingReviews', pauth('local'), async function (req, res) {
+        let CU,
+            response = {},
+            waitingReviews,
+            lockedReviews;
+
+        //CU Managers and Admins may request reviews only for Clarance Unit they are assigned to
+        if (req.user.group === 'clearance_unit_managers' || req.user.group === 'clearance_unit_admins') {
+            CU = req.user.clearance_unit_id;
+        } else if (req.body.ClearanceUnitToAffect) {
+            CU = req.body.ClearanceUnitToAffect;
+        } else {
+            response.success = false;
+            response.err = 'Desired Clearance Unit couldn\'t be resolved';
+            return res.send(response);
+        }
+
+        // find waiting reviews which this user may see
+        waitingReviews = await Review.find({
+            is_waiting: true,
+            is_locked: {$exists: false},
+            clearance_unit_id: CU
+        }).exec();
+
+        if (waitingReviews.length === 0) {
+            response.succes = true;
+            response.waitingReviews = [];
+            return res.send(response);
+        }
+
+        // lock these reviews so other CU Manager won't abe able to work on them simultaneously.
+
+        lockedReviews = await Review.find({
+            _id: {$in: waitingReviews.map((element) => {return element._id})}
+        }).update({
+            is_locked: true,
+            locked_timestamp: new Date(),
+            locked_by_cu_manager_id: req.user._id
+        })
+            .exec();
+        console.log(waitingReviews.length === lockedReviews.nModified);
+
+        res.send([waitingReviews, waitingReviews.length === lockedReviews.nModified])
+
+    });
+
 };
