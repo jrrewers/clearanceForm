@@ -1,11 +1,11 @@
 'use strict';
 
 module.exports = function (app, passport, mongoose) {
-    //const pauth = passport.authenticate.bind(passport);
+    const pauth = passport.authenticate.bind(passport);
     const Review = mongoose.model('Review');
     const CUModel = mongoose.model('Clearance_unit');
 
-    app.post('/sendClearanceRequest', async function (req, res) {
+    app.post('/sendClearanceRequest', pauth() ,async function (req, res) {
         let response = {};
         let requestsArr = [];
         let requestedCUs = req.body.requestedClearanceUnits;
@@ -74,4 +74,8 @@ module.exports = function (app, passport, mongoose) {
         res.send(response);
 
     });
+
+    app.post('/test', passport.authenticate('local'), async function (req,res) {
+        res.send(req.body);
+    })
 };

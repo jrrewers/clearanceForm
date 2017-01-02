@@ -3,20 +3,25 @@ const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 
 module.exports = function (app, passport, mongoose) {
-    let test_model = mongoose.model('test');
-    let test_model2 = mongoose.model('test2');
+    const Clearance_unit_manager = mongoose.model('Clearance_unit_manager'),
+        Verification_unit_manager = mongoose.model('Verification_unit_manager'),
+        Employee = mongoose.model('Employee'),
+        System_admin = mongoose.model('System_admin');
+
     passport.use('local', new localStrategy(
         async function (username, password, done) {
+            const verifyFound = function (found) {
+                if (!!found && (bcrypt.compareSync(password, found.password))) {
+                    return done(null, found);
+                }
+            };
+
             try {
                 console.log('entered');
-                let foundIn_test_model = await test_model.findOne({username: username}).exec();
-                if (!!foundIn_test_model && (bcrypt.compareSync(password, foundIn_test_model.password))) {
-                    return done(null, foundIn_test_model)
-                }
-                let foundIn_test_model2 = await test_model2.findOne({username: username}).exec();
-                if (!!foundIn_test_model2 && (bcrypt.compareSync(password, foundIn_test_model2.password))) {
-                    return done(null, foundIn_test_model2)
-                }
+                const foundInCUManagers = await Clearance_unit_manager.findOne({username: username}).exec();
+                verifyFound(foundInCUManagers);
+                const foundInVUManagers = await Clearance_unit_manager.findOne({username: username}).exec();
+                verifyFound(foundInVUManagers);
                 return done(null, false)
             } catch (error) {
                 return done(error);
@@ -24,12 +29,12 @@ module.exports = function (app, passport, mongoose) {
         }
     ));
 
-    passport.serializeUser(function(user, done) {
+    passport.serializeUser(function (user, done) {
         done(null, user.id);
     });
 
-    passport.deserializeUser(function(id, done) {
-        test_model.findById(id, function(err, user) {
+    passport.deserializeUser(function (id, done) {
+        test_model.findById(id, function (err, user) {
             done(err, user);
         });
     });

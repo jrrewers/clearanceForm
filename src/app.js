@@ -33,13 +33,13 @@ require('./middleware/authorization')(app, passport, mongoose);
 require('./routes/common')(app, passport, mongoose);
 require('./routes/review')(app, passport, mongoose);
 
-
 app.listen(3000);
 
 (async function createMockDatabase(){
-    /*const Verificiation_Unit = mongoose.model('Verification_unit');
-    const Employee = mongoose.model('Employee');
+    /*const Clearance_unit_manager = mongoose.model('Clearance_unit_manager');
     const Clearance_unit = mongoose.model('Clearance_unit');
+    const Verificiation_Unit = mongoose.model('Verification_unit');
+    const Employee = mongoose.model('Employee');
 
     const CUsToSave = [
         {name: 'Biblioteka Zbiorów Specjalnych'},
@@ -62,8 +62,20 @@ app.listen(3000);
         name: 'Jan Kowalski',
         mail: 'example@mail.com'
     };
+
     let savedEmployee = await new Employee(employeeToSave).save();
-    console.log(savedEmployee);*/
+    console.log(savedEmployee);
+
+    let CU = await Clearance_unit.findOne().exec();
+    const CUManagerToSave = {
+        username: 'CUManager',
+        password: bcrypt.hashSync('CUManager'),
+        name: 'Jan Kowalski, CU Manager',
+        mail: 'mail@mail.com',
+        group: 'clearance_unit_managers'
+    };
+    const savedCUManager = await new Clearance_unit_manager(CUManagerToSave).save();
+    console.log(savedCUManager);*/
 })();
 
 
