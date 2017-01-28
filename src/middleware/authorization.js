@@ -65,4 +65,17 @@ module.exports = function (app, passport, mongoose) {
             return done(error);
         }
     });
+
+    passport.verifyAccess = function(group) {
+        return [
+            passport.authenticate('local'),
+            function(req, res, next) {
+                if (req.user.group === group) {
+                    next();
+                } else {
+                    res.send(401, 'bad girl!')
+                }
+            }
+        ];
+    };
 };

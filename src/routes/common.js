@@ -11,7 +11,8 @@ module.exports = function (app, passport, mongoose) {
     });
 
     app.post('/registerUser', async function (req, res) {
-        let savedUser;
+        let savedUser,
+            response = {};
 
         switch (req.body.userToSave.group) {
             case 'verification_unit_admins':
@@ -33,7 +34,15 @@ module.exports = function (app, passport, mongoose) {
                 savedUser = await System_admin(req.body.userToSave).save();
                 break;
         }
-        res.send(savedUser);
+
+        res.succes = !!savedUser;
+        if (res.succes) {
+            response.savedUser = savedUser;
+        } else {
+            response.err = 'User couldn\'t be saved';
+        }
+
+        res.send(response);
     });
 };
 

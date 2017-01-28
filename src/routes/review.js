@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (app, passport, mongoose) {
-    const pauth = passport.authenticate.bind(passport);
+    const pauth = passport.verifyAccess.bind(passport);
     const Review = mongoose.model('Review');
     const CUModel = mongoose.model('Clearance_unit');
 
@@ -52,32 +52,32 @@ module.exports = function (app, passport, mongoose) {
         return res.send(response);
     });
 
-    app.post('/employeeChecklist', pauth('local'), async function (req, res) {
-        let response = {};
-        let requestedCUs = [];
+    app.post('/employeeChecklist', pauth('employees'), async function (req, res) {
+            let response = {};
+            let requestedCUs = [];
 
-        //fetch all user reviews
-        let userReviews = await Review.find({employee_id: req.body.userToAffect})
-            .populate('clearance_unit_id').exec();
+            //fetch all user reviews
+            let userReviews = await Review.find({employee_id: req.body.userToAffect})
+                .populate('clearance_unit_id').exec();
 
-        //iterate through all user reviews, if one is waiting or positively reviewed add id of clearance unit from this review to array.
-        userReviews.forEach((uReview) => {
-            requestedCUs.push(uReview.clearance_unit_id._id.toString())
+            //iterate through all user reviews, if one is waiting or positively reviewed add id of clearance unit from this review to array.
+            userReviews.forEach((uReview) => {
+                requestedCUs.push(uReview.clearance_unit_id._id.toString())
+            });
+
+            //fetch all clearance units and dd mayBeRequested property to each of them so the can later be disabled for request on front end.
+            let availCUs = await CUModel.find().lean().exec();
+            availCUs.forEach(availCU => {
+                availCU.mayBeRequested = requestedCUs.indexOf(availCU._id.toString()) === -1
+            });
+
+            response.success = true;
+            response.userReviews = userReviews;
+            response.clearanceUnits = availCUs;
+
+            res.send(response);
+
         });
-
-        //fetch all clearance units and dd mayBeRequested property to each of them so the can later be disabled for request on front end.
-        let availCUs = await CUModel.find().lean().exec();
-        availCUs.forEach(availCU => {
-            availCU.mayBeRequested = requestedCUs.indexOf(availCU._id.toString()) === -1
-        });
-
-        response.success = true;
-        response.userReviews = userReviews;
-        response.clearanceUnits = availCUs;
-
-        res.send(response);
-
-    });
 
     app.post('/getWaitingReviews', pauth('local'), async function (req, res) {
         let CU,
@@ -112,7 +112,11 @@ module.exports = function (app, passport, mongoose) {
         // lock these reviews so other CU Manager won't abe able to work on them simultaneously.
 
         lockedReviews = await Review.find({
-            _id: {$in: waitingReviews.map((element) => {return element._id})}
+            _id: {
+                $in: waitingReviews.map((element) => {
+                    return element._id
+                })
+            }
         }).update({
             is_locked: true,
             locked_timestamp: new Date(),
